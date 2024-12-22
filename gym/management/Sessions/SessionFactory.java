@@ -1,0 +1,25 @@
+package gym.management.Sessions;
+
+import gym.management.Sessions.Instructor;
+import gym.management.Sessions.*;
+
+import java.text.ParseException;
+
+public class SessionFactory {
+
+    // מתודה ליצירת שיעור חדש בהתבסס על סוג השיעור
+    public static Session createSession(SessionType sessionType, String dateTime, ForumType forumType, Instructor instructor) throws ParseException {
+        switch (sessionType) {
+            case SessionType.Pilates:
+                return new PilatesSession(dateTime, forumType, instructor);
+            case SessionType.ThaiBoxing:
+                return new ThaiBoxingSession(dateTime, forumType, instructor);
+            case SessionType.MachinePilates:
+                return new MachinePilatesSession(dateTime, forumType, instructor);
+            case SessionType.Ninja:
+                return new NinjaSession(dateTime, forumType, instructor);
+            default:
+                throw new IllegalArgumentException("Unknown session type: " + sessionType);
+        }
+    }
+}
