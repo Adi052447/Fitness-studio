@@ -6,6 +6,7 @@ import gym.management.Sessions.*;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class Secretary extends Person {
     }
 
     // Register a client
-    public Client registerClient(Person person) throws DuplicateClientException {
+    public Client registerClient(Person person) throws DuplicateClientException,InvalidAgeException  {
         for (Client client : clients) {
           /*  if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
                 throw new DuplicateClientException("Client already registered: " + person.getName());
@@ -43,9 +44,9 @@ public class Secretary extends Person {
     }
 
     public void unregisterClient(Client client) throws ClientNotRegisteredException {
-      /*  if (!clients.contains(client)) {
-            throw new ClientNotRegisteredException("This client is not registered.");
-        }*/
+       if (!clients.contains(client)) {
+            throw new ClientNotRegisteredException();
+        }
         clients.remove(client);
         actions.add("Unregistered client: " + client.getName());
     }
@@ -63,15 +64,17 @@ public class Secretary extends Person {
         return "Secretary{" + super.toString() + ", salary=" + salary + '}';
     }
 
-    public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) {
+    public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException{
         // בדיקה אם המדריך מוסמך להעביר את סוג השיעור
-        /*  if (!instructor.isQualifiedFor(type)) {
+      /*   if (!instructor.isQualifiedFor(type)) {
             try {
                 throw new InstructorNotQualifiedException();
             } catch (InstructorNotQualifiedException e) {
                 throw new RuntimeException(e);
             }
-        }*/
+        }
+
+       */
 
         // יצירת שיעור חדש
         Session newSession = SessionFactory.createSession(type, dateTime, forumType, instructor);
@@ -89,13 +92,13 @@ public class Secretary extends Person {
 
     }
 
-    public void registerClientToLesson(Client client, Session session) {
+    public void registerClientToLesson(Client client, Session session) throws DuplicateClientException,ClientNotRegisteredException{
         boolean canRegister = true;
         // א. מוודאים שמועד השיעור טרם חלף
-      /*  if (new Date().after(session.getDateTime())) {
+       if (LocalDateTime.now().isAfter(session.getDateTime())) {
             actions.add("Failed registration: Session is not in the future");
             canRegister = false;
-        }*/
+        }
 
         // ב. בודקים אם פורום השיעור תואם את פרטי הלקוח
         if (session.getForumType() == ForumType.Female || session.getForumType() == ForumType.Male) {
@@ -110,21 +113,25 @@ public class Secretary extends Person {
             }
         }
         // ג. מוודאים שנותרו מקומות פנויים לשיעור
-     /*   if (session.getParticipants().size() >= session.getMaxParticipants()) {
-            throw new Exception("No spots available for this session.");
+        if (session.getParticipants().size() >= session.getMaxParticipants()) {
             canRegister = false;
-
-        }*/
+            actions.add("Failed registration: No available spots for session");
+        }
 
         // ד. בודקים אם ללקוח יש יתרת כסף מספקת
-       /* if (client.getBalance() <= session.getPrice()) {
-            throw new Exception("The client does not have enough balance to pay for this session.");
-        }*/
+        if (client.getBalance() < session.getPrice()) {
+            canRegister = false;
+            actions.add("Failed registration: Client doesn't have enough balance");
+        }
 
         // אם הכל בסדר, מוסיפים את הלקוח לשיעור
-        session.addParticipant(client);
-        client.setBalance(client.getBalance() - session.getPrice());
-        actions.add("Client " + client.getName() + " registered to session: ");
+        if(canRegister==true){
+            session.addParticipant(client);
+            client.addSession(session);
+            client.setBalance(client.getBalance() - session.getPrice());
+            actions.add("Client " + client.getName() + " registered to session: ");
+        }
+
     }
 
     private int calculateAge(LocalDate birthDate) {
@@ -157,8 +164,6 @@ public class Secretary extends Person {
 
         // הוספת הפעולה להיסטוריית הפעולות
         actions.add("Hired new instructor: " + newInstructor.getName());
-
-        System.out.println("Instructor hired successfully: " + newInstructor.getName());
         return newInstructor;
     }
 }

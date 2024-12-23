@@ -3,6 +3,7 @@ package gym.management.Sessions;
 import gym.customers.Client;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,9 +28,10 @@ public class Session {
         this.participants = new ArrayList<>();
     }
 
-    public LocalDate getDateTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate date = LocalDate.parse(this.dateTime, formatter);
+    public LocalDateTime getDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime date = LocalDateTime.parse(this.dateTime, formatter);
+
         return date;
     }
 
