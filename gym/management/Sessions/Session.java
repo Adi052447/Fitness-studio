@@ -2,6 +2,8 @@ package gym.management.Sessions;
 
 import gym.customers.Client;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,8 +23,10 @@ public class Session {
         this.participants = new ArrayList<>();
     }
 
-    public String getDateTime() {
-        return this.dateTime;
+    public Date getDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = LocalDate.parse(this.dateTime, formatter);
+        return date;
     }
 
     public ForumType getForumType(){

@@ -8,6 +8,8 @@ import gym.customers.Gender;
 import gym.customers.Person;
 import gym.management.Sessions.*
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -119,7 +121,7 @@ public class Secretary extends Person {
         actions.add("Client " + client.getName() + " registered to session: " + session.getSessionType());
     }
 
-    private int calculateAge(Date birthDate) {
+    private int calculateAge(LocalDate birthDate) {
         Calendar today = Calendar.getInstance();
         Calendar birth = Calendar.getInstance();
         birth.setTime(birthDate);
@@ -139,7 +141,9 @@ public class Secretary extends Person {
             case forumType.Female:
                 return client.getGender().equals(Gender.Female);
             case forumType.Seniors:
-                int clientAge = calculateAge(client.getBirthDate());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDate date = LocalDate.parse(client.getBirthDate(), formatter);
+                int clientAge = calculateAge(date);
                 return clientAge >= 65;
             case forumType.All:
                 return true; // כולם יכולים להשתתף
