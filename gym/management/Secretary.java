@@ -18,7 +18,7 @@ public class Secretary extends Person {
     private ArrayList<Client> clients;
     private ArrayList<Instructor> instructors;
     private ArrayList<Session> sessions;
-    private ArrayList<String> actions;
+    private static ArrayList<String> actions = new ArrayList<>();
 
     // Constructor
     public Secretary(Person person, double salary) {
@@ -27,15 +27,14 @@ public class Secretary extends Person {
         this.clients = new ArrayList<>();
         this.instructors = new ArrayList<>();
         this.sessions = new ArrayList<>();
-        this.actions = new ArrayList<>();
     }
 
     // Register a client
     public Client registerClient(Person person) throws DuplicateClientException,InvalidAgeException  {
         for (Client client : clients) {
-          /*  if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
+            if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
                 throw new DuplicateClientException("Client already registered: " + person.getName());
-            }*/
+            }
         }
         Client newClient = new Client(person);
         clients.add(newClient);
@@ -83,7 +82,7 @@ public class Secretary extends Person {
         sessions.add(newSession);
 
         //   לתקן את הזמן                       עדכון היסטוריית הפעולות
-        actions.add("Created new session: " + forumType + "on " + dateTime + " with instructor: " + instructor.getName());
+        actions.add("Created new session: " + type + " on " + dateTime + " with instructor: " + instructor.getName());
         // החזרת השיעור שנוסף
         return newSession;
     }
