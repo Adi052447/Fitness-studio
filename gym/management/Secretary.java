@@ -1,8 +1,12 @@
 package gym.management;
-import gym.Exception.*
-import gym.customers.*
-import gym.management.Sessions.*
+
+import gym.Exception.*;
+import gym.customers.*;
+import gym.management.Sessions.*;
+
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,9 +32,9 @@ public class Secretary extends Person {
     // Register a client
     public Client registerClient(Person person) throws DuplicateClientException {
         for (Client client : clients) {
-            if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
+          /*  if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
                 throw new DuplicateClientException("Client already registered: " + person.getName());
-            }
+            }*/
         }
         Client newClient = new Client(person);
         clients.add(newClient);
@@ -39,9 +43,9 @@ public class Secretary extends Person {
     }
 
     public void unregisterClient(Client client) throws ClientNotRegisteredException {
-        if (!clients.contains(client)) {
+      /*  if (!clients.contains(client)) {
             throw new ClientNotRegisteredException("This client is not registered.");
-        }
+        }*/
         clients.remove(client);
         actions.add("Unregistered client: " + client.getName());
     }
@@ -59,11 +63,15 @@ public class Secretary extends Person {
         return "Secretary{" + super.toString() + ", salary=" + salary + '}';
     }
 
-    public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
+    public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) {
         // בדיקה אם המדריך מוסמך להעביר את סוג השיעור
-        if (!instructor.isQualifiedFor(type)) {
-            throw new InstructorNotQualifiedException("Instructor " + instructor.getName() + " is not qualified for " + type + " sessions.");
-        }
+        /*  if (!instructor.isQualifiedFor(type)) {
+            try {
+                throw new InstructorNotQualifiedException();
+            } catch (InstructorNotQualifiedException e) {
+                throw new RuntimeException(e);
+            }
+        }*/
 
         // יצירת שיעור חדש
         Session newSession = SessionFactory.createSession(type, dateTime, forumType, instructor);
@@ -71,9 +79,8 @@ public class Secretary extends Person {
         // הוספת השיעור לרשימת השיעורים
         sessions.add(newSession);
 
-        // עדכון היסטוריית הפעולות
-        actions.add("Added new session: " + type + " on " + dateTime + " with instructor " + instructor.getName());
-
+        //   לתקן את הזמן                       עדכון היסטוריית הפעולות
+        actions.add("Created new session: " + forumType + "on " + dateTime + " with instructor: " + instructor.getName());
         // החזרת השיעור שנוסף
         return newSession;
     }
@@ -85,10 +92,10 @@ public class Secretary extends Person {
     public void registerClientToLesson(Client client, Session session) {
         boolean canRegister = true;
         // א. מוודאים שמועד השיעור טרם חלף
-        if (new Date().after(session.getDateTime())) {
+      /*  if (new Date().after(session.getDateTime())) {
             actions.add("Failed registration: Session is not in the future");
             canRegister = false;
-        }
+        }*/
 
         // ב. בודקים אם פורום השיעור תואם את פרטי הלקוח
         if (session.getForumType() == ForumType.Female || session.getForumType() == ForumType.Male) {
@@ -103,34 +110,26 @@ public class Secretary extends Person {
             }
         }
         // ג. מוודאים שנותרו מקומות פנויים לשיעור
-        if (session.getParticipants().size() >= session.getMaxParticipants()) {
+     /*   if (session.getParticipants().size() >= session.getMaxParticipants()) {
             throw new Exception("No spots available for this session.");
             canRegister = false;
 
-        }
+        }*/
 
         // ד. בודקים אם ללקוח יש יתרת כסף מספקת
-        if (client.getBalance() <= session.getPrice()) {
+       /* if (client.getBalance() <= session.getPrice()) {
             throw new Exception("The client does not have enough balance to pay for this session.");
-        }
+        }*/
 
         // אם הכל בסדר, מוסיפים את הלקוח לשיעור
         session.addParticipant(client);
         client.setBalance(client.getBalance() - session.getPrice());
-        actions.add("Client " + client.getName() + " registered to session: " + session.getSessionType());
+        actions.add("Client " + client.getName() + " registered to session: ");
     }
 
     private int calculateAge(LocalDate birthDate) {
-        Calendar today = Calendar.getInstance();
-        Calendar birth = Calendar.getInstance();
-        birth.setTime(birthDate);
-
-        int age = today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
-        if (today.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
-            age--; // אם היום הנוכחי הוא לפני יום ההולדת השנה
-        }
-
-        return age;
+        LocalDate today = LocalDate.now(); // תאריך היום הנוכחי
+        return Period.between(birthDate, today).getYears(); // חישוב השנים בין תאריך הלידה לתאריך הנוכחי
     }
 
     private boolean isForumCompatible(Client client, ForumType forumType) {
@@ -152,6 +151,16 @@ public class Secretary extends Person {
     }
 
     public Instructor hireInstructor(Person p6, int i, ArrayList<SessionType> sessionTypes) {
+        Instructor newInstructor = new Instructor(p6, i, sessionTypes);
+        // הוספת המדריך לרשימה
+        instructors.add(newInstructor);
+
+        // הוספת הפעולה להיסטוריית הפעולות
+        actions.add("Hired new instructor: " + newInstructor.getName());
+
+        System.out.println("Instructor hired successfully: " + newInstructor.getName());
+        return newInstructor;
     }
 }
+
 

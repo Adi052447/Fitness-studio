@@ -27,7 +27,7 @@ public class Session {
         this.participants = new ArrayList<>();
     }
 
-    public Date getDateTime() {
+    public LocalDate getDateTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate date = LocalDate.parse(this.dateTime, formatter);
         return date;

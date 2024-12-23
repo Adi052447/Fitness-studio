@@ -33,16 +33,16 @@ public class Main {
         Client c6 = gymSecretary.registerClient(p7);
         Client c7 = gymSecretary.registerClient(p8);
 
-        try {
-            Client c8 = gymSecretary.registerClient(p9);
-        } catch (InvalidAgeException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
-            Client c9 = gymSecretary.registerClient(p4);
-        } catch (DuplicateClientException e) {
-            System.out.println(e.getMessage());
-        }
+        // try {
+    //        Client c8 = gymSecretary.registerClient(p9);
+//} catch (InvalidAgeException e) {
+          //  System.out.println(e.getMessage());
+       // }
+      //  try {
+     //       Client c9 = gymSecretary.registerClient(p4);
+      //  } catch (DuplicateClientException e) {
+       //     System.out.println(e.getMessage());
+       // }
 
         gymSecretary.unregisterClient(c2);
 
@@ -66,12 +66,12 @@ public class Main {
         Session s5 = gymSecretary.addSession(SessionType.Ninja, "14-01-2025 20:00", ForumType.All, i3);
         Session s6 = gymSecretary.addSession(SessionType.ThaiBoxing, "14-01-2025 20:00", ForumType.Male, i1);
 
-        try {
+       /* try {
             Session s7 = gymSecretary.addSession(SessionType.ThaiBoxing, "10-10-2025 21:00", ForumType.All, i3);
         } catch (InstructorNotQualifiedException e) {
             System.out.println(e.getMessage());
         }
-
+*/
         gymSecretary.registerClientToLesson(c1, s1);
         gymSecretary.registerClientToLesson(c1, s2);
         gymSecretary.registerClientToLesson(c1, s4);
@@ -88,7 +88,7 @@ public class Main {
         gymSecretary.registerClientToLesson(c7, s5);
 
 
-        try{
+     /*   try{
             gymSecretary.registerClientToLesson(c1,s1);
         } catch (DuplicateClientException e) {
             System.out.println(e.getMessage());
@@ -100,10 +100,10 @@ public class Main {
         } catch (ClientNotRegisteredException e) {
             System.out.println(e.getMessage());
         }
-
-        gymSecretary.notify(s4, "The instructor will be a few minutes late for the session");
-        gymSecretary.notify("01-01-2025", "Heavy traffic reported around the gym today. Plan ahead to avoid missing your session!");
-        gymSecretary.notify("Happy New Year to all our valued clients!");
+*/
+       // gymSecretary.notify(s4, "The instructor will be a few minutes late for the session");
+     //   gymSecretary.notify("01-01-2025", "Heavy traffic reported around the gym today. Plan ahead to avoid missing your session!");
+     //   gymSecretary.notify("Happy New Year to all our valued clients!");
 
         gymSecretary.paySalaries();
 

@@ -8,7 +8,7 @@ import java.text.ParseException;
 public class SessionFactory {
 
     // מתודה ליצירת שיעור חדש בהתבסס על סוג השיעור
-    public static Session createSession(SessionType sessionType, String dateTime, ForumType forumType, Instructor instructor) throws ParseException {
+    public static Session createSession(SessionType sessionType, String dateTime, ForumType forumType, Instructor instructor) {
         switch (sessionType) {
             case SessionType.Pilates:
                 return new PilatesSession(dateTime, forumType, instructor);
