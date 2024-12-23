@@ -14,32 +14,30 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Secretary extends Person {
-    private double salary;
-    private ArrayList<Client> clients;
-    private ArrayList<Instructor> instructors;
-    private ArrayList<Session> sessions;
+    private int salary;
+    private static int balance = 0;
+    private static ArrayList<Client> clients = new ArrayList<>();
+    private static ArrayList<Instructor> instructors = new ArrayList<>();
+    private static ArrayList<Session> sessions = new ArrayList<>();
     private static ArrayList<String> actions = new ArrayList<>();
 
     // Constructor
-    public Secretary(Person person, double salary) {
-        super(person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
+    public Secretary(Person person, int salary) {
+        super(person.getId(), person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
         this.salary = salary;
-        this.clients = new ArrayList<>();
-        this.instructors = new ArrayList<>();
-        this.sessions = new ArrayList<>();
-        actions.add("A new secretary has started working at the gym: " +person.getName());
+        actions.add("A new secretary has started working at the gym: " + person.getName());
     }
 
     // Register a client
-    public Client registerClient(Person person) throws DuplicateClientException,InvalidAgeException  {
+    public Client registerClient(Person person) throws DuplicateClientException, InvalidAgeException {
         for (Client client : clients) {
-            if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
+            if (person.getId()== client.getId()) {
                 throw new DuplicateClientException();
             }
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate date = LocalDate.parse(person.getBirthDate(), formatter);
-        if (calculateAge(date) < 18) {
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        //  LocalDate date = LocalDate.parse(person.getBirthDate(), formatter);
+        if (person.getAge() < 18) {
             throw new InvalidAgeException();
         }
 
@@ -50,13 +48,12 @@ public class Secretary extends Person {
     }
 
     public void unregisterClient(Client client) throws ClientNotRegisteredException {
-       if (!clients.contains(client)) {
+        if (!clients.contains(client)) {
             throw new ClientNotRegisteredException();
         }
         clients.remove(client);
         actions.add("Unregistered client: " + client.getName());
     }
-    // Other methods (similar structure): , hireInstructor, addSession, etc.
 
     // Print actions history
     public void printActions() {
@@ -70,22 +67,22 @@ public class Secretary extends Person {
         return "Secretary{" + super.toString() + ", salary=" + salary + '}';
     }
 
-    public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException{
+    public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
         // בדיקה אם המדריך מוסמך להעביר את סוג השיעור
         if (!instructor.isQualifiedFor(type)) {
             throw new InstructorNotQualifiedException();
         }
 
-
-
         // יצירת שיעור חדש
         Session newSession = SessionFactory.createSession(type, dateTime, forumType, instructor);
-
         // הוספת השיעור לרשימת השיעורים
         sessions.add(newSession);
+        //                           עדכון היסטוריית הפעולות
 
-        //   לתקן את הזמן                       עדכון היסטוריית הפעולות
-        actions.add("Created new session: " + type + " on " + dateTime + " with instructor: " + instructor.getName());
+        // המרה למבנה LocalDateTime
+        DateTimeFormatter sourceFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime dateTime1 = LocalDateTime.parse(dateTime, sourceFormatter);
+        actions.add("Created new session: " + type + " on " + dateTime1 + " with instructor: " + instructor.getName());
         // החזרת השיעור שנוסף
         return newSession;
     }
@@ -94,10 +91,16 @@ public class Secretary extends Person {
 
     }
 
-    public void registerClientToLesson(Client client, Session session) throws DuplicateClientException,ClientNotRegisteredException{
+    public void registerClientToLesson(Client client, Session session) throws DuplicateClientException, ClientNotRegisteredException, NullPointerException {
         boolean canRegister = true;
-        // א. מוודאים שמועד השיעור טרם חלף
-       if (LocalDateTime.now().isAfter(session.getDateTime())) {
+        for (Client clients : session.getParticipants()) {
+       /*     if (client.getId() == clients.getId()) {
+                canRegister=false;
+                throw new DuplicateClientException();
+            }*/
+        }
+        // מוודאים שמועד השיעור טרם חלף
+        if (LocalDateTime.now().isAfter(session.getDateTime())) {
             actions.add("Failed registration: Session is not in the future");
             canRegister = false;
         }
@@ -116,8 +119,8 @@ public class Secretary extends Person {
         }
         //  וידוא שנותרו מקומות פנויים לשיעור
         if (session.getParticipants().size() >= session.getMaxParticipants()) {
-            canRegister = false;
             actions.add("Failed registration: No available spots for session");
+            canRegister = false;
         }
 
         //  בודקים אם ללקוח יש יתרת כסף מספקת
@@ -127,18 +130,14 @@ public class Secretary extends Person {
         }
 
         // אם הכל בסדר, מוסיפים את הלקוח לשיעור
-        if(canRegister==true){
+        if (canRegister == true) {
             session.addParticipant(client);
             client.addSession(session);
             client.setBalance(client.getBalance() - session.getPrice());
-            actions.add("Registered client: "+client.getName()+ " to session: "+session.getType() +" on "+ session.getDateTime()+ " for price: "+session.getPrice());
+            this.balance = this.balance + session.getPrice();
+            actions.add("Registered client: " + client.getName() + " to session: " + session.getType() + " on " + session.getDateTime() + " for price: " + session.getPrice());
         }
 
-    }
-
-    private int calculateAge(LocalDate birthDate) {
-        LocalDate today = LocalDate.now(); // תאריך היום הנוכחי
-        return Period.between(birthDate, today).getYears(); // חישוב השנים בין תאריך הלידה לתאריך הנוכחי
     }
 
     private boolean isForumCompatible(Client client, ForumType forumType) {
@@ -148,10 +147,7 @@ public class Secretary extends Person {
             case forumType.Female:
                 return client.getGender().equals(Gender.Female);
             case forumType.Seniors:
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                LocalDate date = LocalDate.parse(client.getBirthDate(), formatter);
-                int clientAge = calculateAge(date);
-                return clientAge >= 65;
+                return client.getAge() >= 65;
             case forumType.All:
                 return true; // כולם יכולים להשתתף
             default:
@@ -159,13 +155,35 @@ public class Secretary extends Person {
         }
     }
 
-    public Instructor hireInstructor(Person p6, int i, ArrayList<SessionType> sessionTypes) {
+    public Instructor hireInstructor(Person p6, int i, ArrayList<SessionType> sessionTypes) throws InvalidAgeException {
+       if(p6.getAge()<18){
+           throw new InvalidAgeException();
+       }
         Instructor newInstructor = new Instructor(p6, i, sessionTypes);
         // הוספת המדריך לרשימה
         instructors.add(newInstructor);
         // הוספת הפעולה להיסטוריית הפעולות
-        actions.add("Hired new instructor: " + newInstructor.getName()+" with salary per hour: "+i);
+        actions.add("Hired new instructor: " + newInstructor.getName() + " with salary per hour: " + i);
         return newInstructor;
+    }
+
+    public ArrayList<Client> getClients() {
+        return this.clients;
+    }
+
+    public ArrayList<Instructor> getInstructors() {
+        return this.instructors;
+    }
+
+    public ArrayList<Session> getSessions() {
+        return this.sessions;
+    }
+
+    public int getSalary() {
+        return this.salary;
+    }
+    public int getBalance(){
+        return this.balance;
     }
 }
 

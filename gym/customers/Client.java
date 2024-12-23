@@ -11,7 +11,7 @@ public class Client extends Person {
 
     // Constructor
     public Client(Person person) {
-        super(person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
+        super(person.getId(), person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
         this.sessions = new ArrayList<>();
         this.notifications = new ArrayList<>();
     }

@@ -65,6 +65,10 @@ public class Session {
         return price;
     }
 
+    public Instructor getInstructor(){
+        return this.instructor;
+    }
+
 
 }
 

@@ -4,7 +4,7 @@ public class InstructorNotQualifiedException extends Exception {
 
     // קונסטרקטור ברירת מחדל עם הודעה כללית
     public InstructorNotQualifiedException() {
-        super("The instructor is not qualified to lead this session.");
+        super("Error: Instructor is not qualified to conduct this session type.");
     }
 
     // קונסטרקטור מותאם אישית שמאפשר להעביר הודעה
