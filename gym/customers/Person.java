@@ -5,7 +5,6 @@ public class Person {
     private double balance;
     private Gender gender;
     private String birthDate;
-
     private String id;
     // Constructor
     public Person(String name, double balance, Gender gender, String birthDate) {

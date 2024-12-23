@@ -14,6 +14,10 @@ public class Session {
     private Instructor instructor;
     private ArrayList<Client> participants;
 
+    private int maxParticipants;
+
+    private double price;
+
     // Constructor
     public Session(SessionType type, String dateTime, ForumType forumType, Instructor instructor) {
         this.type = type;
@@ -45,6 +49,22 @@ public class Session {
     @Override
     public String toString() {
         return "Session{" + "type=" + type + ", dateTime='" + dateTime + "', forumType=" + forumType + ", instructor=" + instructor + '}';
+    }
+
+    public int getMaxParticipants() {
+        return this.maxParticipants;
+    }
+
+    public void setMaxParticipants(int maxParticipants) {
+        this.maxParticipants = maxParticipants;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }
 

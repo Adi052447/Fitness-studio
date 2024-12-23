@@ -1,13 +1,7 @@
 package gym.management;
-
-import gym.Exception.ClientNotRegisteredException;
-import gym.Exception.DuplicateClientException;
-import gym.Exception.InstructorNotQualifiedException;
-import gym.customers.Client;
-import gym.customers.Gender;
-import gym.customers.Person;
+import gym.Exception.*
+import gym.customers.*
 import gym.management.Sessions.*
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,13 +28,13 @@ public class Secretary extends Person {
     // Register a client
     public Client registerClient(Person person) throws DuplicateClientException {
         for (Client client : clients) {
-            if (client.getName().equals(person.getName())) {
+            if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
                 throw new DuplicateClientException("Client already registered: " + person.getName());
             }
         }
         Client newClient = new Client(person);
         clients.add(newClient);
-        actions.add("Registered client: " + person.getName());
+        actions.add("Registered new client: " + newClient.getName());
         return newClient;
     }
 
@@ -88,36 +82,41 @@ public class Secretary extends Person {
 
     }
 
-    public void registerClientToLesson(Client client, Session session) throws Exception {
+    public void registerClientToLesson(Client client, Session session) {
+        boolean canRegister = true;
         // א. מוודאים שמועד השיעור טרם חלף
         if (new Date().after(session.getDateTime())) {
-            throw new Exception("Session is not in the future");
+            actions.add("Failed registration: Session is not in the future");
+            canRegister = false;
         }
 
         // ב. בודקים אם פורום השיעור תואם את פרטי הלקוח
         if (session.getForumType() == ForumType.Female || session.getForumType() == ForumType.Male) {
             if (!isForumCompatible(client, session.getForumType())) {
-                throw new Exception("Client's gender doesn't match the session's gender requirements");
+                actions.add("Failed registration: Client's gender doesn't match the session's gender requirements");
             }
         }
         if (session.getForumType() == ForumType.Seniors) {
             if (!isForumCompatible(client, session.getForumType())) {
-                throw new Exception("Client doesn't meet the age requirements for this session (Seniors)");
+                actions.add("Failed registration: Client doesn't meet the age requirements for this session (Seniors)");
+                canRegister = false;
             }
         }
         // ג. מוודאים שנותרו מקומות פנויים לשיעור
         if (session.getParticipants().size() >= session.getMaxParticipants()) {
             throw new Exception("No spots available for this session.");
+            canRegister = false;
+
         }
 
         // ד. בודקים אם ללקוח יש יתרת כסף מספקת
-        if (client.getBalance() < session.getCost()) {
+        if (client.getBalance() <= session.getPrice()) {
             throw new Exception("The client does not have enough balance to pay for this session.");
         }
 
         // אם הכל בסדר, מוסיפים את הלקוח לשיעור
         session.addParticipant(client);
-        client.setBalance(client.getBalance() - session.getCost());
+        client.setBalance(client.getBalance() - session.getPrice());
         actions.add("Client " + client.getName() + " registered to session: " + session.getSessionType());
     }
 
