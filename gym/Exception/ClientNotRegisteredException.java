@@ -4,7 +4,7 @@ public class ClientNotRegisteredException extends Exception {
 
     // קונסטרקטור ברירת מחדל עם הודעת שגיאה כללית
     public ClientNotRegisteredException() {
-        super("The client is not registered in the system and cannot perform this action.");
+        super("Error: The client is not registered with the gym and cannot enroll in lessons");
     }
 
     // קונסטרקטור מותאם אישית שמאפשר העברת הודעת שגיאה

@@ -27,15 +27,22 @@ public class Secretary extends Person {
         this.clients = new ArrayList<>();
         this.instructors = new ArrayList<>();
         this.sessions = new ArrayList<>();
+        actions.add("A new secretary has started working at the gym: " +person.getName());
     }
 
     // Register a client
     public Client registerClient(Person person) throws DuplicateClientException,InvalidAgeException  {
         for (Client client : clients) {
             if (client.getName().equals(person.getName())&&client.getBalance()==person.getBalance()&&client.getGender().equals(person.getGender())&&client.getBirthDate().equals(person.getBirthDate())) {
-                throw new DuplicateClientException("Client already registered: " + person.getName());
+                throw new DuplicateClientException();
             }
         }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = LocalDate.parse(person.getBirthDate(), formatter);
+        if (calculateAge(date) < 18) {
+            throw new InvalidAgeException();
+        }
+
         Client newClient = new Client(person);
         clients.add(newClient);
         actions.add("Registered new client: " + newClient.getName());
@@ -65,15 +72,11 @@ public class Secretary extends Person {
 
     public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException{
         // בדיקה אם המדריך מוסמך להעביר את סוג השיעור
-      /*   if (!instructor.isQualifiedFor(type)) {
-            try {
-                throw new InstructorNotQualifiedException();
-            } catch (InstructorNotQualifiedException e) {
-                throw new RuntimeException(e);
-            }
+        if (!instructor.isQualifiedFor(type)) {
+            throw new InstructorNotQualifiedException();
         }
 
-       */
+
 
         // יצירת שיעור חדש
         Session newSession = SessionFactory.createSession(type, dateTime, forumType, instructor);
@@ -99,7 +102,7 @@ public class Secretary extends Person {
             canRegister = false;
         }
 
-        // ב. בודקים אם פורום השיעור תואם את פרטי הלקוח
+        //  בודקים אם פורום השיעור תואם את פרטי הלקוח
         if (session.getForumType() == ForumType.Female || session.getForumType() == ForumType.Male) {
             if (!isForumCompatible(client, session.getForumType())) {
                 actions.add("Failed registration: Client's gender doesn't match the session's gender requirements");
@@ -111,13 +114,13 @@ public class Secretary extends Person {
                 canRegister = false;
             }
         }
-        // ג. מוודאים שנותרו מקומות פנויים לשיעור
+        //  וידוא שנותרו מקומות פנויים לשיעור
         if (session.getParticipants().size() >= session.getMaxParticipants()) {
             canRegister = false;
             actions.add("Failed registration: No available spots for session");
         }
 
-        // ד. בודקים אם ללקוח יש יתרת כסף מספקת
+        //  בודקים אם ללקוח יש יתרת כסף מספקת
         if (client.getBalance() < session.getPrice()) {
             canRegister = false;
             actions.add("Failed registration: Client doesn't have enough balance");
@@ -128,7 +131,7 @@ public class Secretary extends Person {
             session.addParticipant(client);
             client.addSession(session);
             client.setBalance(client.getBalance() - session.getPrice());
-            actions.add("Client " + client.getName() + " registered to session: ");
+            actions.add("Registered client: "+client.getName()+ " to session: "+session.getType() +" on "+ session.getDateTime()+ " for price: "+session.getPrice());
         }
 
     }
@@ -160,9 +163,8 @@ public class Secretary extends Person {
         Instructor newInstructor = new Instructor(p6, i, sessionTypes);
         // הוספת המדריך לרשימה
         instructors.add(newInstructor);
-
         // הוספת הפעולה להיסטוריית הפעולות
-        actions.add("Hired new instructor: " + newInstructor.getName());
+        actions.add("Hired new instructor: " + newInstructor.getName()+" with salary per hour: "+i);
         return newInstructor;
     }
 }

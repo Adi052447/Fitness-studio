@@ -4,7 +4,7 @@ public class InvalidAgeException extends Exception {
 
     // קונסטרקטור ברירת מחדל עם הודעת שגיאה כללית
     public InvalidAgeException() {
-        super("The provided age is invalid for this action.");
+        super("Error: Client must be at least 18 years old to register");
     }
 
     // קונסטרקטור מותאם אישית שמאפשר להעברת הודעה ספציפית

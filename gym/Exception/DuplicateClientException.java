@@ -4,7 +4,7 @@ public class DuplicateClientException extends Exception {
 
     // קונסטרקטור ברירת מחדל עם הודעת שגיאה כללית
     public DuplicateClientException() {
-        super("The client is already registered in the system.");
+        super("Error: The client is already registered");
     }
 
     // קונסטרקטור מותאם אישית שמאפשר העברת הודעת שגיאה

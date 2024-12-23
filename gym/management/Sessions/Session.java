@@ -15,9 +15,9 @@ public class Session {
     private Instructor instructor;
     private ArrayList<Client> participants;
 
-    private int maxParticipants;
+    protected int maxParticipants = -1; // ערך ברירת מחדל
 
-    private double price;
+    protected int price= -1;
 
     // Constructor
     public Session(SessionType type, String dateTime, ForumType forumType, Instructor instructor) {
@@ -57,17 +57,15 @@ public class Session {
         return this.maxParticipants;
     }
 
-    public void setMaxParticipants(int maxParticipants) {
-        this.maxParticipants = maxParticipants;
-    }
 
-    public double getPrice() {
+    public SessionType getType(){
+        return this.type;
+    }
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+
 }
 
 
