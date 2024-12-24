@@ -1,12 +1,11 @@
 package gym.management.Sessions;
 
 import gym.customers.Client;
+import gym.customers.Instructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Session {
     private SessionType type;

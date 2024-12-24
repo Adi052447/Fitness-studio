@@ -1,5 +1,7 @@
 package gym.management.Sessions;
 
+import gym.customers.Instructor;
+
 public class NinjaSession extends Session {
 
     public NinjaSession(String dateTime, ForumType forumType, Instructor instructor) {

@@ -24,7 +24,7 @@ public class Person {
         this.age= Period.between(date, LocalDate.now()).getYears();
         this.id=idcount++;
     }
-    protected Person(int id, String name, int balance, Gender gender, String birthDate) {
+     protected Person(int id, String name, int balance, Gender gender, String birthDate) {
         this.id = id; // שמירת ID קיים
         this.name = name;
         this.balance = balance;

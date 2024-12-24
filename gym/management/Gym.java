@@ -2,13 +2,23 @@ package gym.management;
 
 import gym.customers.Client;
 import gym.customers.Person;
-import gym.management.Sessions.Instructor;
+import gym.customers.Instructor;
 import gym.management.Sessions.Session;
+
+import java.util.ArrayList;
 
 public class Gym {
     private static Gym instance = null;
     private String name;
+    private int balance = 0;
     private Secretary secretary;
+
+    private ArrayList<Client> clients = new ArrayList<>();
+    private ArrayList<Instructor> instructors = new ArrayList<>();
+    private ArrayList<Session> sessions = new ArrayList<>();
+
+    private ArrayList<String> actions = new ArrayList<>();
+
 
     // Private constructor for Singleton
     private Gym() {
@@ -22,18 +32,36 @@ public class Gym {
         return instance;
     }
 
+    public ArrayList<String> getActions() {
+        return this.actions;
+    }
+
+
     // Setters
     public void setName(String name) {
         this.name = name;
     }
 
     public void setSecretary(Person person, int salary) {
-        this.secretary = new Secretary(person, salary);
+        if (secretary != null) {
+            secretary.deactivate();
+        }
+        secretary = new Secretary(person, salary);
     }
 
     // Getters
     public Secretary getSecretary() {
-        return secretary;
+        return this.secretary;
+    }
+    public ArrayList<Instructor> getInstructors() {
+        return this.instructors;
+    }
+
+    public ArrayList<Session> getSessions() {
+        return this.sessions;
+    }
+    public ArrayList<Client> getClients() {
+        return this.clients;
     }
 
     @Override
@@ -57,12 +85,13 @@ public class Gym {
         }
         sb.append(sbb);
         // Gym Balance
-        sb.append("Gym Balance: ").append(secretary.getBalance());
+        sb.append("Gym Balance: ").append(this.balance);
         sb.append("\n\n");
 
 
         sb.append("Clients Data:\n");
-        for (Client client : secretary.getClients()) {
+
+        for (Client client : this.clients) {
             sb.append("ID: ").append(client.getId())
                     .append(" | Name: ").append(client.getName())
                     .append(" | Gender: ").append(client.getGender())
@@ -74,7 +103,7 @@ public class Gym {
 
         // Employees Data
         sb.append("Employees Data:\n");
-        for (Instructor employee : secretary.getInstructors()) {
+        for (Instructor employee : this.instructors) {
             sb.append("ID: ").append(employee.getId())
                     .append(" | Name: ").append(employee.getName())
                     .append(" | Gender: ").append(employee.getGender())
@@ -91,7 +120,7 @@ public class Gym {
 
         // Sessions Data
         sb.append("Sessions Data:\n");
-        for (Session session : secretary.getSessions()) {
+        for (Session session : this.sessions) {
             sb.append("Session Type: ").append(session.getType())
                     .append(" | Date: ").append(session.getDateTime())
                     .append(" | Forum: ").append(session.getForumType())
@@ -103,6 +132,14 @@ public class Gym {
 
         return sb.toString();
 
+    }
+
+    public int getBalance() {
+        return this.balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
     //"Gym Name: " + name+"\n" + "Gym Secretary: ID: "+secretary.getId()+" | Name: " + secretary.getName() +" | Gender: "+secretary.getGender()+" | Birthday: "+secretary.getBirthDate()+" | Age: "+secretary.getAge();
 }

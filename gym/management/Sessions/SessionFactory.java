@@ -1,9 +1,6 @@
 package gym.management.Sessions;
 
-import gym.management.Sessions.Instructor;
-import gym.management.Sessions.*;
-
-import java.text.ParseException;
+import gym.customers.Instructor;
 
 public class SessionFactory {
 

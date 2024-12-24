@@ -1,6 +1,7 @@
-package gym.management.Sessions;
+package gym.customers;
 
 import gym.customers.Person;
+import gym.management.Sessions.SessionType;
 
 import java.util.ArrayList;
 
