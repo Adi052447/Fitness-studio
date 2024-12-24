@@ -33,7 +33,9 @@ public class Session {
 
         return date;
     }
-
+public String getDate(){
+        return this.dateTime;
+}
     public ForumType getForumType(){
         return this.forumType;
     }

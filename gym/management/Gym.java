@@ -46,13 +46,29 @@ public class Gym {
         if (secretary != null) {
             secretary.deactivate();
         }
-        secretary = new Secretary(person, salary);
+        // בדיקה אם האדם הוא כבר מדריך
+        for (Instructor instructor : instructors) {
+            if (instructor.getId() == person.getId()) {
+                this.secretary = Secretary.createSecretary(instructor, salary);
+                return;
+            }
+        }
+        for (Client client : clients) {
+            if (client.getId() == person.getId()) {
+                this.secretary = Secretary.createSecretary(client, salary);
+                return;
+            }
+        }
+        // יצירת מזכירה חדשה אם היא לא לקוח או מדריך
+        this.secretary = Secretary.createSecretary(person, salary);
     }
+
 
     // Getters
     public Secretary getSecretary() {
         return this.secretary;
     }
+
     public ArrayList<Instructor> getInstructors() {
         return this.instructors;
     }
@@ -60,6 +76,7 @@ public class Gym {
     public ArrayList<Session> getSessions() {
         return this.sessions;
     }
+
     public ArrayList<Client> getClients() {
         return this.clients;
     }
@@ -75,7 +92,7 @@ public class Gym {
         Secretary secretary = this.getSecretary();
         if (secretary != null) {
             sb.append("Gym Secretary: ");
-                    sbb.append("ID: ").append(secretary.getId())
+            sbb.append("ID: ").append(secretary.getId())
                     .append(" | Name: ").append(secretary.getName())
                     .append(" | Gender: ").append(secretary.getGender())
                     .append(" | Birthday: ").append(secretary.getBirthDate())
@@ -122,7 +139,7 @@ public class Gym {
         sb.append("Sessions Data:\n");
         for (Session session : this.sessions) {
             sb.append("Session Type: ").append(session.getType())
-                    .append(" | Date: ").append(session.getDateTime())
+                    .append(" | Date: ").append(changeFormat(session.getDate()))
                     .append(" | Forum: ").append(session.getForumType())
                     .append(" | Instructor: ").append(session.getInstructor().getName())
                     .append(" | Participants: ").append(session.getParticipants().size())
@@ -141,7 +158,11 @@ public class Gym {
     public void setBalance(int balance) {
         this.balance = balance;
     }
-    //"Gym Name: " + name+"\n" + "Gym Secretary: ID: "+secretary.getId()+" | Name: " + secretary.getName() +" | Gender: "+secretary.getGender()+" | Birthday: "+secretary.getBirthDate()+" | Age: "+secretary.getAge();
+
+    public String changeFormat(String inputDateTime) {
+        String formattedDateTime = inputDateTime.replace("T", " ");
+        return formattedDateTime;
+    }
 }
 
 

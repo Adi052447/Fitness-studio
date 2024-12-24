@@ -99,11 +99,9 @@ public class Main {
         } catch (ClientNotRegisteredException e) {
             System.out.println(e.getMessage());
         }
-
         //gymSecretary.notify(s4, "The instructor will be a few minutes late for the session");
         // gymSecretary.notify("01-01-2025", "Heavy traffic reported around the gym today. Plan ahead to avoid missing your session!");
         // gymSecretary.notify("Happy New Year to all our valued clients!");
-
         gymSecretary.paySalaries();
 
         gym.setSecretary(p3, 8000);

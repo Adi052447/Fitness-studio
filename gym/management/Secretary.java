@@ -10,18 +10,20 @@ import java.util.ArrayList;
 
 public class Secretary extends Person {
     private int salary;
-    private static int balance = 0;
     private Gym gym;
     private boolean isActive = true;
 
     // Constructor
-    public Secretary(Person person, int salary) {
+    private Secretary(Person person, int salary) {
         super(person.getId(), person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
         this.salary = salary;
         this.gym = Gym.getInstance();
         gym.getActions().add("A new secretary has started working at the gym: " + person.getName());
+    this.synchronizeBalance(person);
     }
-
+    public static Secretary createSecretary(Person person, int salary) {
+        return new Secretary( person, salary);
+    }
     // Register a client
     public Client registerClient(Person person) throws DuplicateClientException, InvalidAgeException {
         ArrayList<Client> clients = gym.getClients();
@@ -56,12 +58,9 @@ public class Secretary extends Person {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Secretary{" + super.toString() + ", salary=" + salary + '}';
-    }
 
     public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
+
         ensureActive();
         // בדיקה אם המדריך מוסמך להעביר את סוג השיעור
         if (!instructor.isQualifiedFor(type)) {
@@ -99,7 +98,7 @@ public class Secretary extends Person {
         }
 
         totalSalaries += this.salary;
-        gym.getSecretary().setBalance(balance + this.salary);
+        gym.getSecretary().setBalance(this.getBalance() + this.salary);
         synchronizeBalance(this);
 
         gym.setBalance(gym.getBalance() - totalSalaries);
@@ -195,10 +194,6 @@ public class Secretary extends Person {
         return this.salary;
     }
 
-    public int getBalance() {
-        return this.balance;
-    }
-
     public void deactivate() {
         isActive = false;
     }
@@ -213,14 +208,22 @@ public class Secretary extends Person {
         for (Client client : gym.getClients()) {
             if (client.getId() == person.getId()) {
                 client.setBalance(person.getBalance());
+                break;
             }
         }
         for (Instructor instructor : gym.getInstructors()) {
             if (instructor.getId() == person.getId()) {
                 instructor.setBalance(person.getBalance());
+                break;
             }
         }
+        if (gym.getSecretary()!=null){
+            if (gym.getSecretary().getId() == person.getId())
+                gym.getSecretary().setBalance(person.getBalance());
+        }
+
     }
+
 }
 
 
