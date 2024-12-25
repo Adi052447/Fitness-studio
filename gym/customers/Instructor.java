@@ -1,9 +1,10 @@
 package gym.customers;
-
-import gym.customers.Person;
+import gym.management.Sessions.ForumType;
+import gym.management.Sessions.Session;
 import gym.management.Sessions.SessionType;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Instructor extends Person {
     private int hourlyRate;
@@ -11,7 +12,7 @@ public class Instructor extends Person {
 
     // Constructor
     public Instructor(Person person, int hourlyRate, ArrayList<SessionType> qualifications) {
-        super(person.getId(),person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
+        super(person.getId(),person.getName(), person.getMoneyBalance(), person.getGender(), person.getBirthDate());
         this.hourlyRate = hourlyRate;
         this.qualifications = new ArrayList<>(qualifications);
     }
@@ -31,6 +32,12 @@ public class Instructor extends Person {
 
     public ArrayList<SessionType> getQualifications(){
         return this.qualifications;
+    }
+    public static String convertSessionsToString(ArrayList<SessionType> qual) {
+        // שימוש ב-Stream להמרה למחרוזת וצירוף ללא סוגריים
+        return qual.stream()
+                .map(SessionType::toString) // המרה למחרוזת באמצעות toString
+                .collect(Collectors.joining(", ")); // צירוף המחרוזות עם פסיקים
     }
 }
 

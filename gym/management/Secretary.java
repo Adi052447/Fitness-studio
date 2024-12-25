@@ -15,13 +15,12 @@ public class Secretary extends Person {
 
     // Constructor
     private Secretary(Person person, int salary) {
-        super(person.getId(), person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
+        super(person.getId(), person.getName(), person.getMoneyBalance(), person.getGender(), person.getBirthDate());
         this.salary = salary;
         this.gym = Gym.getInstance();
         gym.getActions().add("A new secretary has started working at the gym: " + person.getName());
-    this.synchronizeBalance(person);
     }
-    public static Secretary createSecretary(Person person, int salary) {
+     static Secretary createSecretary(Person person, int salary) {
         return new Secretary( person, salary);
     }
     // Register a client
@@ -57,8 +56,6 @@ public class Secretary extends Person {
             System.out.println(action);
         }
     }
-
-
     public Session addSession(SessionType type, String dateTime, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
 
         ensureActive();
@@ -93,14 +90,11 @@ public class Secretary extends Person {
             }
             int salary = numSessions * instructor.getSalary();
             totalSalaries += salary;
-            instructor.setBalance(instructor.getBalance() + salary);
-            synchronizeBalance(instructor);
+            instructor.setMoneyBalance(instructor.getMoneyBalance() + salary);
         }
 
         totalSalaries += this.salary;
-        gym.getSecretary().setBalance(this.getBalance() + this.salary);
-        synchronizeBalance(this);
-
+        gym.getSecretary().setMoneyBalance(this.getMoneyBalance() + this.salary);
         gym.setBalance(gym.getBalance() - totalSalaries);
 
         gym.getActions().add("Salaries have been paid to all employees");
@@ -145,7 +139,7 @@ public class Secretary extends Person {
         }
 
         //  בודקים אם ללקוח יש יתרת כסף מספקת
-        if (client.getBalance() < session.getPrice()) {
+        if (client.getMoneyBalance() < session.getPrice()) {
             canRegister = false;
             gym.getActions().add("Failed registration: Client doesn't have enough balance");
         }
@@ -154,8 +148,7 @@ public class Secretary extends Person {
         if (canRegister == true) {
             session.addParticipant(client);
             client.addSession(session);
-            client.setBalance(client.getBalance() - session.getPrice());
-            synchronizeBalance(client);
+            client.setMoneyBalance(client.getMoneyBalance() - session.getPrice());
             gym.setBalance(gym.getBalance() + session.getPrice());
             gym.getActions().add("Registered client: " + client.getName() + " to session: " + session.getType() + " on " + session.getDateTime() + " for price: " + session.getPrice());
         }
@@ -202,26 +195,6 @@ public class Secretary extends Person {
         if (!isActive) {
             throw new NullPointerException();
         }
-    }
-
-    public void synchronizeBalance(Person person) {
-        for (Client client : gym.getClients()) {
-            if (client.getId() == person.getId()) {
-                client.setBalance(person.getBalance());
-                break;
-            }
-        }
-        for (Instructor instructor : gym.getInstructors()) {
-            if (instructor.getId() == person.getId()) {
-                instructor.setBalance(person.getBalance());
-                break;
-            }
-        }
-        if (gym.getSecretary()!=null){
-            if (gym.getSecretary().getId() == person.getId())
-                gym.getSecretary().setBalance(person.getBalance());
-        }
-
     }
 
 }

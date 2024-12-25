@@ -2,7 +2,6 @@ package gym.Exception;
 
 public class InvalidAgeException extends Exception {
 
-    // קונסטרקטור ברירת מחדל עם הודעת שגיאה כללית
     public InvalidAgeException() {
         super("Error: Client must be at least 18 years old to register");
     }
@@ -12,10 +11,5 @@ public class InvalidAgeException extends Exception {
         super(message);
     }
 
-    // מתודת getMessage (כבר קיימת ב-Exception, אבל אפשר להוסיף לה לוגיקה מותאמת אם יש צורך)
-    @Override
-    public String getMessage() {
-        return super.getMessage();
-    }
 }
 

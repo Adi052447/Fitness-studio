@@ -1,8 +1,5 @@
 package gym.management;
-
-import gym.customers.Client;
-import gym.customers.Person;
-import gym.customers.Instructor;
+import gym.customers.*;
 import gym.management.Sessions.Session;
 
 import java.util.ArrayList;
@@ -46,19 +43,8 @@ public class Gym {
         if (secretary != null) {
             secretary.deactivate();
         }
-        // בדיקה אם האדם הוא כבר מדריך
-        for (Instructor instructor : instructors) {
-            if (instructor.getId() == person.getId()) {
-                this.secretary = Secretary.createSecretary(instructor, salary);
-                return;
-            }
-        }
-        for (Client client : clients) {
-            if (client.getId() == person.getId()) {
-                this.secretary = Secretary.createSecretary(client, salary);
-                return;
-            }
-        }
+
+
         // יצירת מזכירה חדשה אם היא לא לקוח או מדריך
         this.secretary = Secretary.createSecretary(person, salary);
     }
@@ -97,7 +83,7 @@ public class Gym {
                     .append(" | Gender: ").append(secretary.getGender())
                     .append(" | Birthday: ").append(secretary.getBirthDate())
                     .append(" | Age: ").append(secretary.getAge())
-                    .append(" | Balance: ").append(secretary.getBalance())
+                    .append(" | Balance: ").append(secretary.getMoneyBalance())
                     .append(" | Role: Secretary | Salary per Month: ").append(secretary.getSalary()).append("\n");
         }
         sb.append(sbb);
@@ -114,7 +100,7 @@ public class Gym {
                     .append(" | Gender: ").append(client.getGender())
                     .append(" | Birthday: ").append(client.getBirthDate())
                     .append(" | Age: ").append(client.getAge())
-                    .append(" | Balance: ").append(client.getBalance()).append("\n");
+                    .append(" | Balance: ").append(client.getMoneyBalance()).append("\n");
         }
         sb.append("\n");
 
@@ -126,11 +112,11 @@ public class Gym {
                     .append(" | Gender: ").append(employee.getGender())
                     .append(" | Birthday: ").append(employee.getBirthDate())
                     .append(" | Age: ").append(employee.getAge())
-                    .append(" | Balance: ").append(employee.getBalance())
+                    .append(" | Balance: ").append(employee.getMoneyBalance())
                     .append(" | Role: Instructor")
                     .append(" | Salary per Hour: ")
                     .append(employee.getSalary())
-                    .append(" | Certified Classes: ").append(employee.getQualifications()).append("\n");
+                    .append(" | Certified Classes: ").append(employee.convertSessionsToString(employee.getQualifications())).append("\n");
         }
         sb.append(sbb);
         sb.append("\n");

@@ -1,8 +1,5 @@
 package gym.customers;
-
-
 import gym.management.Sessions.Session;
-
 import java.util.ArrayList;
 
 public class Client extends Person {
@@ -11,7 +8,7 @@ public class Client extends Person {
 
     // Constructor
     public Client(Person person) {
-        super(person.getId(),person.getName(), person.getBalance(), person.getGender(), person.getBirthDate());
+        super(person.getId(),person.getName(), person.getMoneyBalance(), person.getGender(), person.getBirthDate());
         this.sessions = new ArrayList<>();
         this.notifications = new ArrayList<>();
     }
