@@ -1,4 +1,5 @@
 package gym.management.Sessions;
+
 import gym.customers.Instructor;
 
 public class SessionFactory {
@@ -15,7 +16,7 @@ public class SessionFactory {
             case Ninja:
                 return new NinjaSession(dateTime, forumType, instructor);
             default:
-                throw new IllegalArgumentException("Unknown session type: " + sessionType);
+                return null;
         }
     }
 }
