@@ -1,7 +1,5 @@
 package gym.management.Sessions;
-
 import gym.customers.Instructor;
-
 public class SessionFactory {
 
     // מתודה ליצירת שיעור חדש בהתבסס על סוג השיעור
