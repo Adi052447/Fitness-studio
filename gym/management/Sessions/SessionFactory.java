@@ -14,6 +14,8 @@ public class SessionFactory {
                 return new MachinePilatesSession(dateTime, forumType, instructor);
             case Ninja:
                 return new NinjaSession(dateTime, forumType, instructor);
+            default:
+                throw new IllegalArgumentException("Unknown session type: " + sessionType);
         }
     }
 }
