@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import static gym.management.Sessions.ForumType.*;
+
 public class Secretary extends Person {
     private int salary;
     private Gym gym;
@@ -121,12 +123,12 @@ public class Secretary extends Person {
         }
 
         //  בודקים אם פורום השיעור תואם את פרטי הלקוח
-        if (session.getForumType() == ForumType.Female || session.getForumType() == ForumType.Male) {
+        if (session.getForumType() == Female || session.getForumType() == Male) {
             if (!isForumCompatible(client, session.getForumType())) {
                 gym.getActions().add("Failed registration: Client's gender doesn't match the session's gender requirements");
             }
         }
-        if (session.getForumType() == ForumType.Seniors) {
+        if (session.getForumType() == Seniors) {
             if (!isForumCompatible(client, session.getForumType())) {
                 gym.getActions().add("Failed registration: Client doesn't meet the age requirements for this session (Seniors)");
                 canRegister = false;
@@ -156,11 +158,11 @@ public class Secretary extends Person {
 
     private boolean isForumCompatible(Client client, ForumType forumType) {
         switch (forumType) {
-            case forumType.Male:
+            case Male:
                 return client.getGender().equals(Gender.Male);
-            case forumType.Female:
+            case Female:
                 return client.getGender().equals(Gender.Female);
-            case forumType.Seniors:
+            case Seniors:
                 return client.getAge() >= 65;
             case forumType.All:
                 return true; // כולם יכולים להשתתף
