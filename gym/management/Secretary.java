@@ -164,7 +164,7 @@ public class Secretary extends Person {
                 return client.getGender().equals(Gender.Female);
             case Seniors:
                 return client.getAge() >= 65;
-            case forumType.All:
+            case All:
                 return true; // כולם יכולים להשתתף
             default:
                 return false; // פורום לא מוכר
