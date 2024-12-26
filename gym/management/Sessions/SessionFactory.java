@@ -1,5 +1,6 @@
 package gym.management.Sessions;
 import gym.customers.Instructor;
+
 public class SessionFactory {
 
     // מתודה ליצירת שיעור חדש בהתבסס על סוג השיעור
@@ -13,8 +14,6 @@ public class SessionFactory {
                 return new MachinePilatesSession(dateTime, forumType, instructor);
             case Ninja:
                 return new NinjaSession(dateTime, forumType, instructor);
-            default:
-                throw new IllegalArgumentException("Unknown session type: " + sessionType);
         }
     }
 }
