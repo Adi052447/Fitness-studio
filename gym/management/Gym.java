@@ -122,14 +122,14 @@ public class Gym {
         sb.append("\n");
 
         // Sessions Data
-        sb.append("Sessions Data:\n");
+        sb.append("Sessions Data:");
         for (Session session : this.sessions) {
-            sb.append("Session Type: ").append(session.getType())
+            sb.append("\n").append("Session Type: ").append(session.getType())
                     .append(" | Date: ").append(changeFormat(session.getDate()))
                     .append(" | Forum: ").append(session.getForumType())
                     .append(" | Instructor: ").append(session.getInstructor().getName())
                     .append(" | Participants: ").append(session.getParticipants().size())
-                    .append("/").append(session.getMaxParticipants()).append("\n");
+                    .append("/").append(session.getMaxParticipants());
         }
 
 
