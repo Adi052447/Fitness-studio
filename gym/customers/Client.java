@@ -2,7 +2,7 @@ package gym.customers;
 import gym.management.Sessions.Session;
 import java.util.ArrayList;
 
-public class Client extends Person {
+public class Client extends Person implements Observer {
     private ArrayList<Session> sessions;
     private ArrayList<String> notifications;
 
@@ -35,6 +35,11 @@ public class Client extends Person {
     @Override
     public String toString() {
         return "Client{" + super.toString() + ", sessions=" + sessions.size() + ", notifications=" + notifications + '}';
+    }
+    @Override
+    public void update(String message) {
+        notifications.add(message);
+
     }
 }
 

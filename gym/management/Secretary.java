@@ -4,16 +4,18 @@ import gym.Exception.*;
 import gym.customers.*;
 import gym.management.Sessions.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import static gym.management.Sessions.ForumType.*;
 
-public class Secretary extends Person {
+public class Secretary extends Person implements Subject{
     private int salary;
     private Gym gym;
     private boolean isActive = true;
+    private ArrayList<Observer> observers = new ArrayList<>();
 
     // Constructor
     private Secretary(Person person, int salary) {
@@ -198,7 +200,57 @@ public class Secretary extends Person {
             throw new NullPointerException();
         }
     }
+    // Add an observer (client) to the notifications list
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
 
+    // Remove an observer (client) from the notifications list
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+    // Send notifications to all clients
+    @Override
+    public void notify(String message) {
+        for (Client client : gym.getClients()) { // שימוש ברשימת הלקוחות מתוך gym
+            client.update(message); // Add the message to the client's notifications
+        }
+        gym.getActions().add("A message was sent to all gym clients: " + message);
+
+    }
+
+    // Send notifications to clients registered to a specific session
+    @Override
+    public void notify(Session session, String message) {
+        for (Client client : session.getParticipants()) { // שימוש ברשימת הלקוחות מתוך gym
+            if (client.getSessions().contains(session)) {
+                client.update(message); // Add the message to the client's notifications
+            }
+        }
+        gym.getActions().add("A message was sent to everyone registered for session " + session.getType() + " on " + session.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")) + " : " + message);
+    }
+
+    // Send notifications to clients with a session on a specific date
+    @Override
+    public void notify(String date, String message) {
+        // תרגום הפורמט של התאריך לפורמט LocalDate
+        LocalDate targetDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        for (Client client : gym.getClients()) { // שימוש ברשימת הלקוחות מתוך gym
+            boolean hasSessionOnDate = client.getSessions().stream()
+                    .anyMatch(session -> session.getDateTime().toLocalDate().equals(targetDate)); // השוואת תאריכים מתוקנת
+
+            if (hasSessionOnDate) {
+                client.update(message); // הוספת ההודעה לרשימת ההתראות של הלקוח
+            }
+        }
+
+        // שמירת הפעולה בהיסטוריית הפעולות של המערכת
+        String formattedDate = targetDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        gym.getActions().add("A message was sent to everyone registered for a session on " + formattedDate + " : " + message);
+    }
 }
 
 
