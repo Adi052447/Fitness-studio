@@ -1,18 +1,25 @@
 package gym.management;
+
 import gym.Exception.*;
 import gym.customers.*;
 import gym.management.Sessions.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import gym.notifications.Observer;
+import gym.notifications.Subject;
+
+
 import static gym.management.Sessions.ForumType.*;
 
-public class Secretary extends Person implements Subject{
+public class Secretary extends Person implements Subject {
     private int salary;
     private Gym gym;
     private boolean isActive = true;
     private ArrayList<Observer> observers = new ArrayList<>();
+
 
     // Constructor
     private Secretary(Person person, int salary) {
@@ -21,7 +28,7 @@ public class Secretary extends Person implements Subject{
         this.gym = Gym.getInstance();
         gym.getActions().add("A new secretary has started working at the gym: " + person.getName());
     }
-     static Secretary createSecretary(Person person, int salary) {
+    static Secretary createSecretary(Person person, int salary) {
         return new Secretary( person, salary);
     }
     // Register a client
@@ -230,7 +237,7 @@ public class Secretary extends Person implements Subject{
     }
 
     // Send notifications to clients with a session on a specific date
-    @Override
+   @Override
     public void notify(String date, String message) {
         // תרגום הפורמט של התאריך לפורמט LocalDate
         LocalDate targetDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -248,6 +255,8 @@ public class Secretary extends Person implements Subject{
         String formattedDate = targetDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         gym.getActions().add("A message was sent to everyone registered for a session on " + formattedDate + " : " + message);
     }
+
+
+
+
 }
-
-
